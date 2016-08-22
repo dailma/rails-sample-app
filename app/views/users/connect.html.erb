@@ -1,0 +1,44 @@
+<% content_for :head do %>
+	<title>Users - Professional Profile</title>
+<% end %>
+
+<h2>Users you might want to connect with</h2>
+
+<% if @connectables.length === 0 %>
+	<table>
+		<tr><td>No users are available</td></tr>
+	</table>
+<% else %>
+	<table>
+		<tr>
+			<th>Name</th>
+			<th>Action</th>
+		</tr>
+		<% @connectables.each do |conn_id, name| %>
+			<tr>
+				<td>
+					<a href="<%= url_for(:controller => :users, :action => :show, :id => conn_id) %>"><%= name %></a>
+				</td>
+				<td>
+					<form action="<%= url_for(:controller => :invitations, :action => :create) %>" method="post">
+						<input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+						<input type="hidden" name="conn_id" value="<%= conn_id %>">
+						<input type="submit" value="Connect" class="btn_link">
+					</form>
+				</td>
+			</tr>
+		<% end %>
+	</table>
+<% end %>
+<% if @pending.length != 0 %>
+	<p>Users to whom you've sent connection requests</p>
+	<table>
+		<% @pending.each do |inv_id, name| %>
+			<tr>
+				<td><a href="<%= url_for(:controller => :users, :action => :show, :id => inv_id) %>"><%= name %></a></td>
+			</tr>
+		<% end %>
+	</table>
+<% end %>
+
+<a class="biglinks" href="<%= url_for(:controller => :users, :action => :index) %>">My profile</a>

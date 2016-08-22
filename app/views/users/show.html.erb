@@ -1,0 +1,9 @@
+<% content_for :head do %>
+	<title><%= @user.name %> - Professional Profile</title>
+<% end %>
+
+<h2><%= @user.name %></h2>
+
+<p><span>Description</span><%= @user.description %></p>
+
+<a class="biglinks" href="<%= url_for(:controller => :users, :action => :index) %>">My profile</a>

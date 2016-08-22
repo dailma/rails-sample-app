@@ -1,0 +1,62 @@
+<% content_for :head do %>
+	<title>Professional Profile</title>
+<% end %>
+
+<% if flash[:errors] %>
+	<% flash[:errors].each do |msg| %>
+	    <p class="error_msgs"><%= msg %></p>
+	<% end %>
+<% end %>
+<% if flash[:success] %>
+	<p class="success_msg"><%= flash[:success] %></p>
+<% end %>
+<h2>Hi, <%= @user.name %>!</h2>
+
+<p>Here is your profile description:</p>
+<p><%= @user.description %></p>
+
+<h3>Your professional network</h3>
+<table>
+	<% if @connections.length === 0 %>
+		<tr><td>You have no connections yet</td></tr>
+	<% else %>
+		<% @connections.each do |conn_id, name| %>
+			<tr>
+				<td><a href="<%= url_for(:controller => :users, :action => :show, :id => conn_id) %>"><%= name %></a></td>
+			</tr>
+		<% end %>
+	<% end %>
+</table>
+<a class="biglinks" href="<%= url_for(:controller => :users, :action => :connect) %>">All users</a>
+
+<h3>Invitations</h3>
+<p>The following people asked you to be in their network:</p>
+	<% if @inviters.length === 0 %>
+		<table>
+			<tr><td>You have no pending invitations</td></tr>
+		</table>
+	<% else %>
+		<table>
+			<tr>
+				<th>Name</th>
+				<th>Actions</th>
+			</tr>
+			<% @inviters.each do |rsvp_id, inviter_id, name| %>
+				<tr>
+					<td><a href="<%= url_for(:controller => :users, :action => :show, :id => inviter_id) %>"><%= name %></a></td>
+					<td>
+					<form class="actions" action="<%= url_for(:controller => :friends, :action => :create) %>" method="post">
+						<input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+						<input type="hidden" name="rsvp_id" value="<%= rsvp_id %>"">
+						<input type="submit" value="Accept" class="btn_link">
+					</form>
+					<form class="actions" action="<%= url_for(:controller => :invitations, :action => :destroy, :id => rsvp_id) %>" method="post">
+						<input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+						<input type="hidden" name="_method" value="delete">
+						<input type="submit" value="Ignore" class="btn_link">
+					</form>
+					</td>
+				</tr>
+			<% end %>
+	<% end %>
+</table>
